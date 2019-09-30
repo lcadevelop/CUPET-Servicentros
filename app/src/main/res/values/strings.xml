@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">CUPET-Servicentros</string>
+
+    <string name="nombre_portada">Servicentros</string>
+    <string name="cupet_portada">CUPET</string>
+    <string name="union_portada">Unión Cuba-Petróleo</string>
+
+    <string name="title_activity_mapa">Servicentros</string>
+
+    <string name="action_settings">Configuración</string>
+    <string name="action_help">Ayuda</string>
+    <string name="action_credtios">Créditos</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="title_activity_detalles">Detalles del Servicentro</string>
+    <string name="title_activity_ayuda">Ayuda</string>
+    <string name="title_activity_creditos">Créditos</string>
+
+    <!-- Menu Mapa Navigation -->
+    <string name="menu_combustibles">Combustibles</string>
+    <string name="menu_provincias">Provincias</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Detalles -->
+    <string name="nombre_titulo">Nombre</string>
+    <string name="direccion_titulo">Dirección</string>
+    <string name="telefono_titulo">Teléfono</string>
+    <string name="diesel_titulo">Diésel</string>
+    <string name="motor_titulo">Gasolina Motor</string>
+    <string name="regular_titulo">Gasolina Regular</string>
+    <string name="especial_titulo">Gasolina Especial</string>
+    <string name="fecha_titulo">Fecha de Abastecimiento</string>
+    <string name="cantidad_titulo">Cantidad Abastecida</string>
+
+</resources>

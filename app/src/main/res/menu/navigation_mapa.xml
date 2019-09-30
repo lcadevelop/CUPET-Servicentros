@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/id_navigation_menu_combustibles"
+        android:title="@string/menu_combustibles"
+        android:icon="@drawable/ic_gas_station_full_24dp"/>
+    <item
+        android:id="@+id/id_navigation_menu_provincias"
+        android:title="@string/menu_provincias"
+        android:icon="@drawable/ic_edit_location_black_24dp"/>
+</menu>

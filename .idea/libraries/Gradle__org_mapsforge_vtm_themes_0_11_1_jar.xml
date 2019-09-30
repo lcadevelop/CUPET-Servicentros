@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: org.mapsforge:vtm-themes:0.11.1@jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mapsforge/vtm-themes/0.11.1/63e2905ba64609a439318de43f450470f2c64891/vtm-themes-0.11.1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mapsforge/vtm-themes/0.11.1/613f07a5fc78b36b718475da6c4cbceee6af2e00/vtm-themes-0.11.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mapsforge/vtm-themes/0.11.1/fef132f7162c58203954b9aab21cb9a95d017b6/vtm-themes-0.11.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

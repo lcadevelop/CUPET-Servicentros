@@ -12,6 +12,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
+
+import com.android.volley.Request;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import org.greenrobot.greendao.database.Database;
 import java.io.File;
@@ -23,6 +27,8 @@ import cu.tecnomatica.android.cupet_servicentros.database.Combustible;
 import cu.tecnomatica.android.cupet_servicentros.database.DaoMaster;
 import cu.tecnomatica.android.cupet_servicentros.database.DaoSession;
 import cu.tecnomatica.android.cupet_servicentros.database.Provincia;
+import cu.tecnomatica.android.cupet_servicentros.database.Servicentro;
+import cu.tecnomatica.android.cupet_servicentros.database.ServicentroDao;
 
 public class MapaActivity extends AppCompatActivity
 {
@@ -30,6 +36,7 @@ public class MapaActivity extends AppCompatActivity
     MapaFragment mapaFragment = new MapaFragment();
 
     private static final String DB_FILE = "/CUPET/servi.db";
+    private static final String api_url = "http://siocunion.cupet.cu/api/Servicentros/";
 
     List<Provincia> provincias;
     List<Combustible> combustibles;
@@ -58,6 +65,10 @@ public class MapaActivity extends AppCompatActivity
 
                     case R.id.id_navigation_menu_provincias:
                         SeleccionarProvincia();
+                        return true;
+
+                    case R.id.id_navigation_menu_servicentros:
+                        SeleccionarServicentros();
                         return true;
                 }
                 return false;
@@ -150,13 +161,33 @@ public class MapaActivity extends AppCompatActivity
                 toast.show();
                 dialog.dismiss();
 
-                fragmentManager = getSupportFragmentManager();
-                mapaFragment = new MapaFragment();
-                fragmentManager.beginTransaction().replace(R.id.id_fragment_contenedor_mapa, mapaFragment).commit();
+                Provincia activa = SeleccionarProvinciaActiva();
+                mapaFragment.RecentrarMapa(Double.parseDouble(activa.getLatitud()), Double.parseDouble(activa.getLongitud()), false);
             }
         });
 
         listaprovincias.show();
+    }
+
+    public Provincia SeleccionarProvinciaActiva()
+    {
+        Provincia provinciaactiva = new Provincia();
+
+        String dbPath = new File(Environment.getExternalStorageDirectory().getPath() + DB_FILE).getAbsolutePath();
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, dbPath);
+        Database database = helper.getWritableDb();
+        final DaoSession daoSession = new DaoMaster(database).newSession();
+
+        provincias = daoSession.getProvinciaDao().loadAll();
+
+        for (int i = 0; i < provincias.size(); i++)
+        {
+            if (provincias.get(i).getActiva())
+            {
+                provinciaactiva = provincias.get(i);
+            }
+        }
+        return provinciaactiva;
     }
 
     public void SeleccionarCombustible()
@@ -173,9 +204,9 @@ public class MapaActivity extends AppCompatActivity
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item);
 
-        for (int i = 0; i < combustibles.size(); i++)
+        for (int i = combustibles.size() -1; i >= 0; i--)
         {
-            arrayAdapter.add(combustibles.get(i).getNombre());
+            arrayAdapter.add(combustibles.get(i).getNombre()+ " " + combustibles.get(i).getCodigo());
         }
 
         listacombustibles.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
@@ -189,5 +220,47 @@ public class MapaActivity extends AppCompatActivity
         });
 
         listacombustibles.show();
+    }
+
+    public void SeleccionarServicentros()
+    {
+        String dbPath = new File(Environment.getExternalStorageDirectory().getPath() + DB_FILE).getAbsolutePath();
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, dbPath);
+        Database database = helper.getWritableDb();
+        final DaoSession daoSession = new DaoMaster(database).newSession();
+
+        Provincia provinciaactiva = SeleccionarProvinciaActiva();
+        final List<Servicentro> servicentrosxprovincia = daoSession.getServicentroDao().queryBuilder().where(ServicentroDao.Properties.Idprovincia.like(provinciaactiva.getIdprovincia().toString())).list();
+
+        AlertDialog.Builder listaservicentros = new AlertDialog.Builder(this);
+        listaservicentros.setTitle("Servicentros de " + provinciaactiva.getNombre());
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item);
+
+        for (int i = 0; i < servicentrosxprovincia.size(); i++)
+        {
+            arrayAdapter.add(servicentrosxprovincia.get(i).getNombre());
+        }
+
+        listaservicentros.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                double latitud = Double.parseDouble(servicentrosxprovincia.get(which).getLatitud());
+                double longitud = Double.parseDouble(servicentrosxprovincia.get(which).getLongitud());
+                mapaFragment.RecentrarMapa(latitud, longitud, true);
+
+                Toast toast = Toast.makeText(getApplicationContext(), "Servicentro Seleccionado: " + servicentrosxprovincia.get(which).getNombre(), Toast.LENGTH_SHORT);
+                toast.show();
+                dialog.dismiss();
+            }
+        });
+
+        listaservicentros.show();
+    }
+
+    public void ActualizarServicentros()
+    {
+
     }
 }

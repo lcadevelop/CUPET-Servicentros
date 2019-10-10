@@ -3,9 +3,13 @@
     <item
         android:id="@+id/id_navigation_menu_combustibles"
         android:title="@string/menu_combustibles"
-        android:icon="@drawable/ic_gas_station_full_24dp"/>
+        android:icon="@drawable/ic_opacity_green_900_24dp"/>
     <item
         android:id="@+id/id_navigation_menu_provincias"
         android:title="@string/menu_provincias"
         android:icon="@drawable/ic_edit_location_black_24dp"/>
+    <item
+        android:id="@+id/id_navigation_menu_servicentros"
+        android:title="@string/menu_servicentros"
+        android:icon="@drawable/ic_gas_station_full_24dp"/>
 </menu>

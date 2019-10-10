@@ -16,4 +16,10 @@ public class AyudaActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    @Override
+    public boolean onSupportNavigateUp()
+    {
+        onBackPressed();
+        return false;
+    }
 }

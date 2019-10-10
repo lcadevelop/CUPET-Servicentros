@@ -48,14 +48,14 @@ public class MapaFragment extends Fragment
 
     private static final String MAP_FILE = "/CUPET/cuba.map";
     private static final String DB_FILE = "/CUPET/servi.db";
-    MapView mapView;
-    MapScaleBar mapScaleBar;
+    private MapView mapView;
+    private MapScaleBar mapScaleBar;
 
-    ArrayList<MarkerItem> arrayListFull;
-    ArrayList<MarkerItem> arrayListEmpty;
+    private ArrayList<MarkerItem> arrayListFull;
+    private ArrayList<MarkerItem> arrayListEmpty;
 
-    List<Provincia> provincias;
-    List<Servicentro> servicentros;
+    private List<Provincia> provincias;
+    private List<Servicentro> servicentros;
 
     public MapaFragment() {
         // Required empty public constructor
@@ -116,16 +116,12 @@ public class MapaFragment extends Fragment
 
             mapView.map().setTheme(VtmThemes.DEFAULT);
 
-            mapScaleBar = new DefaultMapScaleBar(mapView.map());
-            MapScaleBarLayer mapScaleBarLayer = new MapScaleBarLayer(mapView.map(), mapScaleBar);
-            mapScaleBarLayer.getRenderer().setPosition(GLViewport.Position.BOTTOM_LEFT);
-            mapScaleBarLayer.getRenderer().setOffset(5 * CanvasAdapter.getScale(), 0);
-            mapView.map().layers().add(mapScaleBarLayer);
+
 
             double lat = Double.parseDouble(provinciaactiva.getLatitud());
             double lon = Double.parseDouble(provinciaactiva.getLongitud());
-            mapView.map().setMapPosition(lat, lon, 3 << 11);
 
+            RecentrarMapa(lat, lon, false);
             MostrarServicentros();
         }
 
@@ -183,7 +179,7 @@ public class MapaFragment extends Fragment
             {
                 Intent intent = new Intent(getActivity(), DetallesActivity.class);
                 startActivity(intent);
-                return true;
+                return false;
             }
 
             @Override
@@ -196,7 +192,7 @@ public class MapaFragment extends Fragment
             public boolean onItemSingleTapUp(int index, MarkerItem item) {
                 Intent intent = new Intent(getActivity(), DetallesActivity.class);
                 startActivity(intent);
-                return true;
+                return false;
             }
 
             @Override
@@ -215,17 +211,6 @@ public class MapaFragment extends Fragment
             mListener.onFragmentInteraction(uri);
         }
     }
-
-    /*@Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }*/
 
     @Override
     public void onDetach() {
@@ -246,5 +231,17 @@ public class MapaFragment extends Fragment
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void RecentrarMapa(double latitud, double longitud, boolean cerca)
+    {
+        if (cerca)
+        {
+            mapView.map().setMapPosition(latitud, longitud, 12 << 14);
+        }
+        else
+        {
+            mapView.map().setMapPosition(latitud, longitud, 3 << 11);
+        }
     }
 }

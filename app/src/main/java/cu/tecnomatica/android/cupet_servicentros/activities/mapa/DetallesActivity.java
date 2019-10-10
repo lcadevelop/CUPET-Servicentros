@@ -8,7 +8,8 @@ import cu.tecnomatica.android.cupet_servicentros.R;
 public class DetallesActivity extends AppCompatActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalles);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -16,4 +17,10 @@ public class DetallesActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    @Override
+    public boolean onSupportNavigateUp()
+    {
+        onBackPressed();
+        return false;
+    }
 }

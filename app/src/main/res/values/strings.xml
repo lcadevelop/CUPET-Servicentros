@@ -33,6 +33,7 @@
     <!-- Menu Mapa Navigation -->
     <string name="menu_combustibles">Combustibles</string>
     <string name="menu_provincias">Provincias</string>
+    <string name="menu_servicentros">Servicentros</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

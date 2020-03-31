@@ -15,17 +15,11 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-
-import org.greenrobot.greendao.database.Database;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import cu.tecnomatica.android.cupet_servicentros.R;
 import cu.tecnomatica.android.cupet_servicentros.activities.mapa.MapaActivity;
-import cu.tecnomatica.android.cupet_servicentros.database.Combustible;
-import cu.tecnomatica.android.cupet_servicentros.database.DaoMaster;
-import cu.tecnomatica.android.cupet_servicentros.database.DaoSession;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.

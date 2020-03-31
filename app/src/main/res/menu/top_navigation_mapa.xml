@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/id_top_navigation_menu_fecha"
+        android:icon="@drawable/ic_date_range_green_900_24dp"
+        android:title="@string/menu_fecha"/>
+    <item
+        android:id="@+id/id_top_navigation_menu_actualizar"
+        android:icon="@drawable/ic_update_green_900_24dp"
+        android:title="@string/menu_actualizar"/>
+</menu>

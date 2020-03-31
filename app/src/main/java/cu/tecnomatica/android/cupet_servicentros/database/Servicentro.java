@@ -18,7 +18,16 @@ public class Servicentro
     private String direccion;
     private String latitud;
     private String longitud;
-    private String fecha;
+    private boolean diesel;
+    private String fechadiesel;
+    private boolean motor;
+    private String fechamotor;
+    private boolean regular;
+    private String fecharegular;
+    private boolean especial;
+    private String fechaespecial;
+    private boolean premium;
+    private String fechapremium;
 
     @ToOne(joinProperty = "idprovincia")
     private Provincia provincia;
@@ -29,9 +38,12 @@ public class Servicentro
     @Generated(hash = 112351550)
     private transient ServicentroDao myDao;
 
-    @Generated(hash = 637060792)
-    public Servicentro(Long idservicentro, Long idprovincia, String codigo, String nombre,
-            String direccion, String latitud, String longitud, String fecha) {
+    @Generated(hash = 1303415737)
+    public Servicentro(Long idservicentro, Long idprovincia, String codigo,
+            String nombre, String direccion, String latitud, String longitud,
+            boolean diesel, String fechadiesel, boolean motor, String fechamotor,
+            boolean regular, String fecharegular, boolean especial,
+            String fechaespecial, boolean premium, String fechapremium) {
         this.idservicentro = idservicentro;
         this.idprovincia = idprovincia;
         this.codigo = codigo;
@@ -39,7 +51,16 @@ public class Servicentro
         this.direccion = direccion;
         this.latitud = latitud;
         this.longitud = longitud;
-        this.fecha = fecha;
+        this.diesel = diesel;
+        this.fechadiesel = fechadiesel;
+        this.motor = motor;
+        this.fechamotor = fechamotor;
+        this.regular = regular;
+        this.fecharegular = fecharegular;
+        this.especial = especial;
+        this.fechaespecial = fechaespecial;
+        this.premium = premium;
+        this.fechapremium = fechapremium;
     }
 
     @Generated(hash = 154265885)
@@ -102,12 +123,84 @@ public class Servicentro
         this.longitud = longitud;
     }
 
-    public String getFecha() {
-        return this.fecha;
+    public boolean getDiesel() {
+        return this.diesel;
     }
 
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
+    public void setDiesel(boolean diesel) {
+        this.diesel = diesel;
+    }
+
+    public String getFechadiesel() {
+        return this.fechadiesel;
+    }
+
+    public void setFechadiesel(String fechadiesel) {
+        this.fechadiesel = fechadiesel;
+    }
+
+    public boolean getMotor() {
+        return this.motor;
+    }
+
+    public void setMotor(boolean motor) {
+        this.motor = motor;
+    }
+
+    public String getFechamotor() {
+        return this.fechamotor;
+    }
+
+    public void setFechamotor(String fechamotor) {
+        this.fechamotor = fechamotor;
+    }
+
+    public boolean getRegular() {
+        return this.regular;
+    }
+
+    public void setRegular(boolean regular) {
+        this.regular = regular;
+    }
+
+    public String getFecharegular() {
+        return this.fecharegular;
+    }
+
+    public void setFecharegular(String fecharegular) {
+        this.fecharegular = fecharegular;
+    }
+
+    public boolean getEspecial() {
+        return this.especial;
+    }
+
+    public void setEspecial(boolean especial) {
+        this.especial = especial;
+    }
+
+    public String getFechaespecial() {
+        return this.fechaespecial;
+    }
+
+    public void setFechaespecial(String fechaespecial) {
+        this.fechaespecial = fechaespecial;
+    }
+
+    public boolean getPremium() {
+        return this.premium;
+    }
+
+    public void setPremium(boolean premium) {
+        this.premium = premium;
+    }
+
+    public String getFechapremium() {
+        return this.fechapremium;
+    }
+
+    public void setFechapremium(String fechapremium) {
+        this.fechapremium = fechapremium;
     }
 
     @Generated(hash = 2051001964)
@@ -185,4 +278,5 @@ public class Servicentro
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getServicentroDao() : null;
     }
+    
 }

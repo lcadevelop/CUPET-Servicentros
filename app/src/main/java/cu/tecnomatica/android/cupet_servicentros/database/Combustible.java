@@ -15,16 +15,18 @@ public class Combustible
     private boolean existencia;
     private String fecha_abastecido;
     private String cantidad_abastecido;
-    @Generated(hash = 67726392)
+    private boolean activo;
+    @Generated(hash = 257410270)
     public Combustible(Long idcombustible, String nombre, String codigo,
-            boolean existencia, String fecha_abastecido,
-            String cantidad_abastecido) {
+            boolean existencia, String fecha_abastecido, String cantidad_abastecido,
+            boolean activo) {
         this.idcombustible = idcombustible;
         this.nombre = nombre;
         this.codigo = codigo;
         this.existencia = existencia;
         this.fecha_abastecido = fecha_abastecido;
         this.cantidad_abastecido = cantidad_abastecido;
+        this.activo = activo;
     }
     @Generated(hash = 1402177194)
     public Combustible() {
@@ -64,5 +66,11 @@ public class Combustible
     }
     public void setCantidad_abastecido(String cantidad_abastecido) {
         this.cantidad_abastecido = cantidad_abastecido;
+    }
+    public boolean getActivo() {
+        return this.activo;
+    }
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 }

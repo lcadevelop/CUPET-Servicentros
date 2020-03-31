@@ -1,28 +1,39 @@
 package cu.tecnomatica.android.cupet_servicentros.activities.mapa;
+import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
-
-import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import org.greenrobot.greendao.database.Database;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.io.File;
 import java.util.List;
 import cu.tecnomatica.android.cupet_servicentros.R;
 import cu.tecnomatica.android.cupet_servicentros.activities.ayuda.AyudaActivity;
 import cu.tecnomatica.android.cupet_servicentros.activities.ayuda.CreditosActivity;
+import cu.tecnomatica.android.cupet_servicentros.database.Auxiliar;
 import cu.tecnomatica.android.cupet_servicentros.database.Combustible;
 import cu.tecnomatica.android.cupet_servicentros.database.DaoMaster;
 import cu.tecnomatica.android.cupet_servicentros.database.DaoSession;
@@ -36,21 +47,36 @@ public class MapaActivity extends AppCompatActivity
     MapaFragment mapaFragment = new MapaFragment();
 
     private static final String DB_FILE = "/CUPET/servi.db";
-    private static final String api_url = "http://siocunion.cupet.cu/api/Servicentros/";
+    private static final String api_url = "http://siocunion.cupet.cu/api/ServicentrosApk/";
+
+    RequestQueue queue;
 
     List<Provincia> provincias;
     List<Combustible> combustibles;
+
+    private ProgressBar progressBar;
+    private ObjectAnimator objectAnimator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mapa);
 
+        queue = Volley.newRequestQueue(this);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
 
         fragmentManager.beginTransaction().replace(R.id.id_fragment_contenedor_mapa, mapaFragment).commit();
+
+        BottomNavigationView top_menu_navigation = (BottomNavigationView)findViewById(R.id.id_top_navigation);
+        top_menu_navigation.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+            @Override
+            public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
+            {
+            }
+        });
 
         BottomNavigationView menu_navigation = (BottomNavigationView)findViewById(R.id.id_bottom_navigation);
         menu_navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -74,6 +100,20 @@ public class MapaActivity extends AppCompatActivity
                 return false;
             }
         });
+
+        String dbPath = new File(Environment.getExternalStorageDirectory().getPath() + DB_FILE).getAbsolutePath();
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, dbPath);
+        Database database = helper.getWritableDb();
+        final DaoSession daoSession = new DaoMaster(database).newSession();
+
+        List<Auxiliar> auxiliars = daoSession.getAuxiliarDao().loadAll();
+
+        if (auxiliars.get(0).getCarga_inicial())
+        {
+            auxiliars.get(0).setCarga_inicial(false);
+            daoSession.insertOrReplace(auxiliars.get(0));
+            SeleccionarProvincia();
+        }
     }
 
     @Override
@@ -163,6 +203,8 @@ public class MapaActivity extends AppCompatActivity
 
                 Provincia activa = SeleccionarProvinciaActiva();
                 mapaFragment.RecentrarMapa(Double.parseDouble(activa.getLatitud()), Double.parseDouble(activa.getLongitud()), false);
+
+                ActualizarServicentros();
             }
         });
 
@@ -190,6 +232,27 @@ public class MapaActivity extends AppCompatActivity
         return provinciaactiva;
     }
 
+    public Combustible SeleccionarCombustibleActivo()
+    {
+        Combustible combustibleavtivo = new Combustible();
+
+        String dbPath = new File(Environment.getExternalStorageDirectory().getPath() + DB_FILE).getAbsolutePath();
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, dbPath);
+        Database database = helper.getWritableDb();
+        final DaoSession daoSession = new DaoMaster(database).newSession();
+
+        combustibles = daoSession.getCombustibleDao().loadAll();
+
+        for (int i = 0; i < combustibles.size(); i++)
+        {
+            if (combustibles.get(i).getActivo())
+            {
+                combustibleavtivo = combustibles.get(i);
+            }
+        }
+        return combustibleavtivo;
+    }
+
     public void SeleccionarCombustible()
     {
         String dbPath = new File(Environment.getExternalStorageDirectory().getPath() + DB_FILE).getAbsolutePath();
@@ -206,16 +269,35 @@ public class MapaActivity extends AppCompatActivity
 
         for (int i = combustibles.size() -1; i >= 0; i--)
         {
-            arrayAdapter.add(combustibles.get(i).getNombre()+ " " + combustibles.get(i).getCodigo());
+            arrayAdapter.add(combustibles.get(i).getNombre());
         }
 
         listacombustibles.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
+                String combustibleseleccionado = arrayAdapter.getItem(which);
+
+                for (int i = 0; i < combustibles.size(); i++)
+                {
+                    Combustible combustibleTemporal = combustibles.get(i);
+                    if (combustibleTemporal.getNombre().equals(combustibleseleccionado))
+                    {
+                        combustibleTemporal.setActivo(true);
+                        daoSession.insertOrReplace(combustibleTemporal);
+                    }
+                    else
+                    {
+                        combustibleTemporal.setActivo(false);
+                        daoSession.insertOrReplace(combustibleTemporal);
+                    }
+                }
+
                 Toast toast = Toast.makeText(getApplicationContext(), "Combustible Seleccionado: " + combustibles.get(which).getNombre(), Toast.LENGTH_SHORT);
                 toast.show();
                 dialog.dismiss();
+
+                ActualizarServicentros();
             }
         });
 
@@ -261,6 +343,108 @@ public class MapaActivity extends AppCompatActivity
 
     public void ActualizarServicentros()
     {
+        //MostrarProgreso();
+        Provincia provinciaactiva = SeleccionarProvinciaActiva();
 
+        String urlAPI = api_url + provinciaactiva.getIdprovincia();
+
+        String dbPath = new File(Environment.getExternalStorageDirectory().getPath() + DB_FILE).getAbsolutePath();
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, dbPath);
+        Database database = helper.getWritableDb();
+        final DaoSession daoSession = new DaoMaster(database).newSession();
+
+        final List<Servicentro> servicentrosxprovincia = daoSession.getServicentroDao().queryBuilder().where(ServicentroDao.Properties.Idprovincia.like(provinciaactiva.getIdprovincia().toString())).list();
+
+        try
+        {
+            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(urlAPI, new Response.Listener<JSONArray>() {
+                @Override
+                public void onResponse(JSONArray response)
+                {
+                    try
+                    {
+                        for (int i = 0; i < response.length(); i++)
+                        {
+                            JSONObject jsonObject = response.getJSONObject(i);
+
+                            String id = jsonObject.getString("id");
+
+                            for (int k = 0; k < servicentrosxprovincia.size(); k++)
+                            {
+                                if (servicentrosxprovincia.get(k).getCodigo() == id)
+                                {
+                                    Servicentro servicentro = servicentrosxprovincia.get(k);
+
+                                    JSONArray jsonArray = jsonObject.getJSONArray("productos");
+
+                                    for (int j = 0; j < jsonArray.length(); j++)
+                                    {
+                                        JSONObject jsonObject2 = jsonArray.getJSONObject(j);
+                                        String idproducto = jsonObject2.getString("idProducto");
+                                        String fechaservido = jsonObject2.getString("fechaServido");
+                                        String fechamostrar = fechaservido.substring(0, 10);
+
+                                        switch (idproducto)
+                                        {
+                                            case "1":
+                                                servicentro.setDiesel(true);
+                                                servicentro.setFechadiesel(fechamostrar);
+                                                break;
+
+                                            case "2":
+                                                servicentro.setMotor(true);
+                                                servicentro.setFechamotor(fechamostrar);
+                                                break;
+
+                                            case "3":
+                                                servicentro.setRegular(true);
+                                                servicentro.setFecharegular(fechamostrar);
+                                                break;
+
+                                            case "4":
+                                                servicentro.setEspecial(true);
+                                                servicentro.setFechaespecial(fechamostrar);
+                                                break;
+
+                                            case "5":
+                                                servicentro.setPremium(true);
+                                                servicentro.setFechapremium(fechamostrar);
+                                                break;
+                                        }
+                                    }
+
+                                    daoSession.insertOrReplace(servicentro);
+                                }
+                            }
+                        }
+                    }
+                    catch (JSONException e)
+                    {
+                        Log.e("Errorrr ", e.getMessage());
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error)
+                {
+                    Log.e("Error Message: ", error.getMessage());
+                }
+            });
+            queue.add(jsonArrayRequest);
+        }
+        catch (Exception e)
+        {
+            Log.e("ErrorRR: ", e.getMessage());
+        }
+    }
+
+    public void MostrarProgreso()
+    {
+        progressBar = (ProgressBar)findViewById(R.id.idprogressbar);
+        progressBar.setVisibility(View.VISIBLE);
+        objectAnimator = ObjectAnimator.ofInt(progressBar, "progress",0, 100);
+        objectAnimator.setDuration(15);
+        objectAnimator.setInterpolator(new DecelerateInterpolator());
+        objectAnimator.start();
     }
 }

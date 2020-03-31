@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import org.greenrobot.greendao.database.Database;
 import org.oscim.android.MapView;
 import org.oscim.android.canvas.AndroidGraphics;
-import org.oscim.backend.CanvasAdapter;
 import org.oscim.core.GeoPoint;
 import org.oscim.layers.marker.ItemizedLayer;
 import org.oscim.layers.marker.MarkerItem;
@@ -19,10 +18,7 @@ import org.oscim.layers.marker.MarkerSymbol;
 import org.oscim.layers.tile.buildings.BuildingLayer;
 import org.oscim.layers.tile.vector.VectorTileLayer;
 import org.oscim.layers.tile.vector.labeling.LabelLayer;
-import org.oscim.renderer.GLViewport;
-import org.oscim.scalebar.DefaultMapScaleBar;
 import org.oscim.scalebar.MapScaleBar;
-import org.oscim.scalebar.MapScaleBarLayer;
 import org.oscim.theme.VtmThemes;
 import org.oscim.tiling.source.mapfile.MapFileTileSource;
 import java.io.File;
@@ -90,6 +86,7 @@ public class MapaFragment extends Fragment
 
         String dbPath = new File(Environment.getExternalStorageDirectory().getPath() + DB_FILE).getAbsolutePath();
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(getActivity().getApplicationContext(), dbPath);
+        //DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(getActivity().getApplicationContext(), "servi.db");
         Database database = helper.getWritableDb();
         DaoSession daoSession = new DaoMaster(database).newSession();
 

@@ -33,7 +33,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/id_appbar"
-        app:menu="@menu/top_navigation_mapa"/>
+        app:menu="@menu/top_navigation_mapa"
+        android:background="?android:attr/windowBackground"/>
 
     <FrameLayout
         android:id="@+id/id_fragment_contenedor_mapa"

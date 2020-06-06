@@ -42,8 +42,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!-- Detalles -->
-    <string name="nombre_titulo">Nombre</string>
-    <string name="direccion_titulo">Dirección</string>
+    <string name="palabra_nombre">Nombre</string>
+    <string name="palabra_direccion">Dirección</string>
     <string name="telefono_titulo">Teléfono</string>
     <string name="diesel_titulo">Diésel</string>
     <string name="motor_titulo">Gasolina Motor</string>

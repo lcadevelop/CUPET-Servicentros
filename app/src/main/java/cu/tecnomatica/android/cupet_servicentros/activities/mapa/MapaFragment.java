@@ -53,6 +53,13 @@ public class MapaFragment extends Fragment
     private List<Provincia> provincias;
     private List<Servicentro> servicentros;
 
+    String bandera = "";
+
+    String nombre = "";
+    String direccion = "";
+    String horario = "";
+    String telefono = "";
+
     public MapaFragment() {
         // Required empty public constructor
     }
@@ -113,8 +120,6 @@ public class MapaFragment extends Fragment
 
             mapView.map().setTheme(VtmThemes.DEFAULT);
 
-
-
             double lat = Double.parseDouble(provinciaactiva.getLatitud());
             double lon = Double.parseDouble(provinciaactiva.getLongitud());
 
@@ -174,7 +179,12 @@ public class MapaFragment extends Fragment
             @Override
             public boolean onItemSingleTapUp(int index, MarkerItem item)
             {
+                Bundle bundle = new Bundle();
+                bundle.putString("Nombre", servicentros.get(index).getNombre());
+                bundle.putString("Direccion", servicentros.get(index).getDireccion());
+
                 Intent intent = new Intent(getActivity(), DetallesActivity.class);
+                intent.putExtras(bundle);
                 startActivity(intent);
                 return false;
             }
@@ -186,8 +196,14 @@ public class MapaFragment extends Fragment
         });
         ItemizedLayer<MarkerItem> markerItemItemizedLayerEmpty = new ItemizedLayer<MarkerItem>(mapView.map(), arrayListEmpty, symbolEmpty, new ItemizedLayer.OnItemGestureListener<MarkerItem>() {
             @Override
-            public boolean onItemSingleTapUp(int index, MarkerItem item) {
+            public boolean onItemSingleTapUp(int index, MarkerItem item)
+            {
+                Bundle bundle = new Bundle();
+                bundle.putString("Nombre", servicentros.get(index).getNombre());
+                bundle.putString("Direccion", servicentros.get(index).getDireccion());
+
                 Intent intent = new Intent(getActivity(), DetallesActivity.class);
+                intent.putExtras(bundle);
                 startActivity(intent);
                 return false;
             }
